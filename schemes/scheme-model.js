@@ -4,7 +4,7 @@ const find = () => {
   return db("schemes");
 };
 
-const findByID = id => {
+const findById = id => {
   return db("schemes").where({ id });
 };
 
@@ -19,16 +19,33 @@ const findSteps = steps => {
       );
     })
     .orderBy("scheme_name", "step_number");
+};
 
-  // db("steps")
-  //   .select("id", "scheme_name", "step_number", "instructions")
-  //   .join("schemes")
-  //   .on("steps.scheme_id", "=", "schemes.id")
-  //   .orderBy("scheme_name", "step_number");
+const add = scheme => {
+  return db("schemes")
+    .insert(scheme)
+    .then(schemes => {
+      return findById(schemes[0]);
+    });
+};
+
+const update = (id, changes) => {
+  return db("schemes")
+    .where("id", id)
+    .update(changes);
+};
+
+const remove = id => {
+  return db("schemes")
+    .where("id", id)
+    .del();
 };
 
 module.exports = {
   find,
-  findByID,
-  findSteps
+  findById,
+  findSteps,
+  add,
+  update,
+  remove
 };

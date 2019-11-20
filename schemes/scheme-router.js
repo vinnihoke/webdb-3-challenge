@@ -26,7 +26,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   // New
   try {
-    const item = await Schemes.findByID(req.params.id);
+    const item = await Schemes.findById(req.params.id);
     res.status(200).json({ message: "Successfully ...", item });
   } catch (e) {
     res.status(500).json({ message: "Ruh row...", error: e.message });
@@ -121,7 +121,7 @@ router.put("/:id", (req, res) => {
   Schemes.findById(id)
     .then(scheme => {
       if (scheme) {
-        Schemes.update(changes, id).then(updatedScheme => {
+        Schemes.update(id, changes).then(updatedScheme => {
           res.json(updatedScheme);
         });
       } else {
