@@ -83,76 +83,123 @@ router.get("/:id/steps", async (req, res) => {
   //   });
 });
 
-router.post("/", (req, res) => {
-  const schemeData = req.body;
+router.post("/", async (req, res) => {
+try {
+  const item = await Schemes.add(req.body);
+  res.status(201).json({ message: "Successfully ...", item });
+} catch (e) {
+  res.status(500).json({ message: "Ruh row...", error: e.message });
+}
 
-  Schemes.add(schemeData)
-    .then(scheme => {
-      res.status(201).json(scheme);
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to create new scheme" });
-    });
+
+  // const schemeData = req.body;
+
+  // Schemes.add(schemeData)
+  //   .then(scheme => {
+  //     res.status(201).json(scheme);
+  //   })
+  //   .catch(err => {
+  //     res.status(500).json({ message: "Failed to create new scheme" });
+  //   });
 });
 
-router.post("/:id/steps", (req, res) => {
-  const stepData = req.body;
-  const { id } = req.params;
+router.post("/:id/steps", async (req, res) => {
 
-  Schemes.findById(id)
-    .then(scheme => {
-      if (scheme) {
-        Schemes.addStep(stepData, id).then(step => {
-          res.status(201).json(step);
-        });
-      } else {
-        res
-          .status(404)
-          .json({ message: "Could not find scheme with given id." });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to create new step" });
-    });
+  try {
+  const item = await Schemes.findById(req.params.id);
+  if(!!item){
+    await Schemes.addStep(req.body, req.params.id)
+    res.status(200).json({ message: "Successfully ...", item });
+  } else {
+    res.status(404).json({ message: "Couldn't find scheme" })
+  }
+} catch (e) {
+  res.status(500).json({ message: "Ruh row...", error: e.message });
+}
+
+
+  // const stepData = req.body;
+  // const { id } = req.params;
+
+  // Schemes.findById(id)
+  //   .then(scheme => {
+  //     if (scheme) {
+  //       Schemes.addStep(stepData, id).then(step => {
+  //         res.status(201).json(step);
+  //       });
+  //     } else {
+  //       res
+  //         .status(404)
+  //         .json({ message: "Could not find scheme with given id." });
+  //     }
+  //   })
+  //   .catch(err => {
+  //     res.status(500).json({ message: "Failed to create new step" });
+  //   });
 });
 
-router.put("/:id", (req, res) => {
-  const { id } = req.params;
-  const changes = req.body;
+router.put("/:id", async (req, res) => {
 
-  Schemes.findById(id)
-    .then(scheme => {
-      if (scheme) {
-        Schemes.update(id, changes).then(updatedScheme => {
-          res.json(updatedScheme);
-        });
-      } else {
-        res
-          .status(404)
-          .json({ message: "Could not find scheme with given id" });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to update scheme" });
-    });
+  try {
+    const item = await Schemes.findById(req.params.id);
+    if(!!item){
+      await Schemes.update(req.params.id, req.body)
+      res.status(200).json({ message: "Successfully ...", item });
+    } else {
+      res.status(404).json({ message: "Couldn't find scheme" })
+    }
+  } catch (e) {
+    res.status(500).json({ message: "Ruh row...", error: e.message });
+  }
+
+  // const { id } = req.params;
+  // const changes = req.body;
+
+  // Schemes.findById(id)
+  //   .then(scheme => {
+  //     if (scheme) {
+  //       Schemes.update(id, changes).then(updatedScheme => {
+  //         res.json(updatedScheme);
+  //       });
+  //     } else {
+  //       res
+  //         .status(404)
+  //         .json({ message: "Could not find scheme with given id" });
+  //     }
+  //   })
+  //   .catch(err => {
+  //     res.status(500).json({ message: "Failed to update scheme" });
+  //   });
 });
 
-router.delete("/:id", (req, res) => {
-  const { id } = req.params;
+router.delete("/:id", async (req, res) => {
 
-  Schemes.remove(id)
-    .then(deleted => {
-      if (deleted) {
-        res.json({ removed: deleted });
-      } else {
-        res
-          .status(404)
-          .json({ message: "Could not find scheme with given id" });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to delete scheme" });
-    });
+  try {
+    const item = await Schemes.remove(req.params.id);
+    if(!!item){
+      res.status(204).json({ message: "Successfully ...", item });
+    } else {
+      res.status(404).json({ message: "Couldn't find scheme" })
+    }
+  } catch (e) {
+    res.status(500).json({ message: "Ruh row...", error: e.message });
+  }
+
+  // const { id } = req.params;
+
+  // Schemes.remove(id)
+  //   .then(deleted => {
+  //     if (deleted) {
+  //       res.json({ removed: deleted });
+  //     } else {
+  //       res
+  //         .status(404)
+  //         .json({ message: "Could not find scheme with given id" });
+  //     }
+  //   })
+  //   .catch(err => {
+  //     res.status(500).json({ message: "Failed to delete scheme" });
+  //   });
 });
 
 // try {
