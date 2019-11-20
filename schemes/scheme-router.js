@@ -4,6 +4,8 @@ const Schemes = require("./scheme-model.js");
 
 const router = express.Router();
 
+// TODO Still need to complete conversion to try/catch
+
 router.get("/", async (req, res) => {
   // New
   try {
