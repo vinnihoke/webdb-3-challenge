@@ -4,35 +4,65 @@ const Schemes = require("./scheme-model.js");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  Schemes.find()
-    .then(schemes => {
-      res.json(schemes);
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to get schemes" });
-    });
+router.get("/", async (req, res) => {
+  // New
+  try {
+    const item = await Schemes.find();
+    res.status(200).json({ message: "Successfully ...", item });
+  } catch (e) {
+    res.status(500).json({ message: "Ruh row...", error: e.message });
+  }
+
+  // Old
+  // Schemes.find()
+  //   .then(schemes => {
+  //     res.json(schemes);
+  //   })
+  //   .catch(err => {
+  //     res.status(500).json({ message: "Failed to get schemes" });
+  //   });
 });
 
 router.get("/:id", (req, res) => {
-  const { id } = req.params;
+  // New
+  try {
+    const item = await Schemes.findByID(req.params.id);
+    res.status(200).json({ message: "Successfully ...", item });
+  } catch (e) {
+    res.status(500).json({ message: "Ruh row...", error: e.message });
+  }
 
-  Schemes.findById(id)
-    .then(scheme => {
-      if (scheme) {
-        res.json(scheme);
-      } else {
-        res
-          .status(404)
-          .json({ message: "Could not find scheme with given id." });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to get schemes" });
-    });
+
+  // Old
+  // const { id } = req.params;
+
+  // Schemes.findById(id)
+  //   .then(scheme => {
+  //     if (scheme) {
+  //       res.json(scheme);
+  //     } else {
+  //       res
+  //         .status(404)
+  //         .json({ message: "Could not find scheme with given id." });
+  //     }
+  //   })
+  //   .catch(err => {
+  //     res.status(500).json({ message: "Failed to get schemes" });
+  //   });
 });
 
 router.get("/:id/steps", (req, res) => {
+
+  // New
+  try {
+    const item = await Schemes.get();
+    res.status(200).json({ message: "Successfully ...", item });
+  } catch (e) {
+    res.status(500).json({ message: "Ruh row...", error: e.message });
+  }
+
+  
+  // Old
   const { id } = req.params;
 
   Schemes.findSteps(id)
@@ -123,6 +153,8 @@ router.delete("/:id", (req, res) => {
 });
 
 try {
+  const item = await Schemes.get();
+  res.status(200).json({ message: "Successfully ...", item });
 } catch (e) {
   res.status(500).json({ message: "Ruh row...", error: e.message });
 }
