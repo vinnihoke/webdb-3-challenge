@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
   //   });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   // New
   try {
     const item = await Schemes.findByID(req.params.id);
@@ -31,7 +31,6 @@ router.get("/:id", (req, res) => {
   } catch (e) {
     res.status(500).json({ message: "Ruh row...", error: e.message });
   }
-
 
   // Old
   // const { id } = req.params;
@@ -51,33 +50,35 @@ router.get("/:id", (req, res) => {
   //   });
 });
 
-router.get("/:id/steps", (req, res) => {
-
+router.get("/:id/steps", async (req, res) => {
   // New
   try {
-    const item = await Schemes.get();
-    res.status(200).json({ message: "Successfully ...", item });
+    const item = await Schemes.findSteps(req.params.id);
+    if (!!item) {
+      res.status(200).json({ message: "Successfully ...", item });
+    } else {
+      res.status(404).json({ message: "No items", item });
+    }
   } catch (e) {
     res.status(500).json({ message: "Ruh row...", error: e.message });
   }
 
-  
   // Old
-  const { id } = req.params;
+  // const { id } = req.params;
 
-  Schemes.findSteps(id)
-    .then(steps => {
-      if (steps.length) {
-        res.json(steps);
-      } else {
-        res
-          .status(404)
-          .json({ message: "Could not find steps for given scheme" });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to get steps" });
-    });
+  // Schemes.findSteps(id)
+  //   .then(steps => {
+  //     if (steps.length) {
+  //       res.json(steps);
+  //     } else {
+  //       res
+  //         .status(404)
+  //         .json({ message: "Could not find steps for given scheme" });
+  //     }
+  //   })
+  //   .catch(err => {
+  //     res.status(500).json({ message: "Failed to get steps" });
+  //   });
 });
 
 router.post("/", (req, res) => {
@@ -152,11 +153,11 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-try {
-  const item = await Schemes.get();
-  res.status(200).json({ message: "Successfully ...", item });
-} catch (e) {
-  res.status(500).json({ message: "Ruh row...", error: e.message });
-}
+// try {
+//   const item = await Schemes.get();
+//   res.status(200).json({ message: "Successfully ...", item });
+// } catch (e) {
+//   res.status(500).json({ message: "Ruh row...", error: e.message });
+// }
 
 module.exports = router;
